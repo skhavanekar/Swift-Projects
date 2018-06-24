@@ -16,6 +16,7 @@ class PhotosViewController: UICollectionViewController {
     private lazy var photos = PhotosViewController.loadPhotos()
     private lazy var imageManager = PHCachingImageManager()
     
+    private let _disposeBag = DisposeBag()
     private let _selectedPhotosSubject = PublishSubject<UIImage>()
     
     var selectedPhotos: Observable<UIImage> {

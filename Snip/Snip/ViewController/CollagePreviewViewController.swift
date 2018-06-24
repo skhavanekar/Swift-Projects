@@ -38,6 +38,11 @@ class CollagePreviewViewController: UIViewController {
         saveButton.isEnabled = images.count > 0 && images.count % 2 == 0
     }
     
+    private func _updateNavigation() {
+        guard let image = self.collageImageView.image?.scaled(CGSize(width: 22, height: 22)).withRenderingMode(.alwaysOriginal) else { return }
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: nil, action: nil)
+    }
+    
     @IBAction func clearAction(_ sender: Any) {
         _images.value = []
     }
@@ -53,12 +58,19 @@ class CollagePreviewViewController: UIViewController {
     
     @IBAction func addAction(_ sender: Any) {
         let selectPhotoViewController = storyboard!.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
-        selectPhotoViewController.selectedPhotos.subscribe(onNext: { [weak self](image) in
+        let sharedObservable = selectPhotoViewController.selectedPhotos.share()
+        sharedObservable.subscribe(onNext: { [weak self](image) in
             guard let images = self?._images else { return }
             images.value.append(image)
         }) {
             print("Disposed!")
         }.disposed(by: _disposeBag)
+        
+        sharedObservable
+            .ignoreElements()
+            .subscribe(onCompleted: { [weak self] in
+            self?._updateNavigation()
+        }).disposed(by: _disposeBag)
         
         self.navigationController?.pushViewController(selectPhotoViewController, animated: true)
     }
