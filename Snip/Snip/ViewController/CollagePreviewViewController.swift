@@ -43,7 +43,12 @@ class CollagePreviewViewController: UIViewController {
     }
     
     @IBAction func saveAction(_ sender: Any) {
-        
+        guard let image = collageImageView.image else { return }
+        ImageWriter.save(image).subscribe(onSuccess: { (savedId) in
+            print("Image saved as \(savedId)")
+        }) { (error) in
+            print("Error saving image \(error)")
+        }.disposed(by: _disposeBag)
     }
     
     @IBAction func addAction(_ sender: Any) {
