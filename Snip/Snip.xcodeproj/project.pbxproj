@@ -17,6 +17,7 @@
 		42E396B320DF2EAD00E9DC04 /* UIImage+Collage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E396B220DF2EAD00E9DC04 /* UIImage+Collage.swift */; };
 		42E396B520DF33A900E9DC04 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E396B420DF33A900E9DC04 /* PhotosViewController.swift */; };
 		42E396B820DF450300E9DC04 /* ImageWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E396B720DF450300E9DC04 /* ImageWriter.swift */; };
+		42E396FE20DF5EC400E9DC04 /* UIView+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E396FD20DF5EC400E9DC04 /* UIView+Layer.swift */; };
 		5E6B445D3B8DEDF5637285F4 /* Pods_Snip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57C05F025362E53DA05FFA58 /* Pods_Snip.framework */; };
 		5F1C06AD6A6E1864FDA0CEF9 /* Pods_SnipUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99829B13E2DC74E9924F0B99 /* Pods_SnipUITests.framework */; };
 		FDD114ADFC27EBA7AD972DDC /* Pods_SnipTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E3A0137B4423CCB2C55888 /* Pods_SnipTests.framework */; };
@@ -61,6 +62,7 @@
 		42E396B220DF2EAD00E9DC04 /* UIImage+Collage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Collage.swift"; sourceTree = "<group>"; };
 		42E396B420DF33A900E9DC04 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
 		42E396B720DF450300E9DC04 /* ImageWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWriter.swift; sourceTree = "<group>"; };
+		42E396FD20DF5EC400E9DC04 /* UIView+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layer.swift"; sourceTree = "<group>"; };
 		57C05F025362E53DA05FFA58 /* Pods_Snip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Snip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99829B13E2DC74E9924F0B99 /* Pods_SnipUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SnipUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B816EB12A430B89997B2F971 /* Pods-SnipUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SnipUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SnipUITests/Pods-SnipUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				42E396B220DF2EAD00E9DC04 /* UIImage+Collage.swift */,
+				42E396FD20DF5EC400E9DC04 /* UIView+Layer.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -428,6 +431,7 @@
 				42E396B520DF33A900E9DC04 /* PhotosViewController.swift in Sources */,
 				42E396B020DF240400E9DC04 /* CollagePreviewViewController.swift in Sources */,
 				42E396B320DF2EAD00E9DC04 /* UIImage+Collage.swift in Sources */,
+				42E396FE20DF5EC400E9DC04 /* UIView+Layer.swift in Sources */,
 				42E396B820DF450300E9DC04 /* ImageWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

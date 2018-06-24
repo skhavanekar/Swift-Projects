@@ -62,6 +62,9 @@ class CollagePreviewViewController: UIViewController {
         
         // Just allow landscape images
         sharedObservable
+            .takeWhile({ [weak self](image) -> Bool in
+                (self?._images.value.count ?? 0) < (self?._maxImages ?? 6)
+            })
             .filter{ $0.size.width > $0.size.height }
             .subscribe(onNext: { [weak self](image) in
             guard let images = self?._images else { return }
