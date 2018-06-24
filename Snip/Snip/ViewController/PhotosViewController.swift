@@ -104,12 +104,13 @@ class PhotosViewController: UICollectionViewController {
     
     private func _showErrorMessage() {
         alert(title: "Access Denied!", message: "You can grant access from settings!")
-        .asObservable()
-        .subscribe(onCompleted: { [weak self] in
-            self?.dismiss(animated: false, completion: nil)
-            _ = self?.navigationController?.popViewController(animated: true)
-        })
-        .disposed(by: _disposeBag)
+            .asObservable()
+            .take(5.0, scheduler: MainScheduler.instance) // After 5 seconds automatically dismiss alert.
+            .subscribe(onCompleted: { [weak self] in
+                self?.dismiss(animated: false, completion: nil)
+                _ = self?.navigationController?.popViewController(animated: true)
+            })
+            .disposed(by: _disposeBag)
     }
 
 }
