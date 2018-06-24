@@ -22,12 +22,17 @@ class CollagePreviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        _images.asObservable().subscribe(onNext: { [weak self](images) in
+        let imagesObserver = _images.asObservable().throttle(0.5, scheduler: MainScheduler.instance).share(replay: 1, scope: SubjectLifetimeScope.forever) // Throttle request coming in
+            
+        imagesObserver
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self](images) in
             guard let imageView = self?.collageImageView else { return }
             imageView.image = UIImage.collage(images: images, size: imageView.frame.size)
         }).disposed(by: _disposeBag)
         
-        _images.asObservable().subscribe(onNext: { [weak self](images) in
+        imagesObserver
+            .subscribe(onNext: { [weak self](images) in
             self?._updateUI(images)
         }).disposed(by: _disposeBag)
     }

@@ -43,16 +43,19 @@ class PhotosViewController: UICollectionViewController {
         authorizedObserver
             .skipWhile{ $0 == false }
             .take(1)
+            .do(onNext: { [weak self] _ in
+                self?.photos = PhotosViewController.loadPhotos() //Load photos on background thread
+            })
+            .observeOn(MainScheduler.instance) // But observer permissions on main thread
             .subscribe(onNext: { [weak self] _ in
-                DispatchQueue.main.async {
-                    self?.collectionView?.reloadData()
-                }
+                self?.collectionView?.reloadData()
             }).disposed(by: _disposeBag)
         
         // If user denies access to photo library
         authorizedObserver
             .takeLast(1)
             .filter{ $0 == false }
+            .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 guard let `self` = self else { return }
                 self._showErrorMessage()
