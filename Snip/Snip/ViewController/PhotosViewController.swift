@@ -34,6 +34,31 @@ class PhotosViewController: UICollectionViewController {
         return PHAsset.fetchAssets(with: allPhotosOptions)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let authorizedObserver = PHPhotoLibrary.authorized.share()
+        
+        // If user has authorized access to photo Library
+        authorizedObserver
+            .skipWhile{ $0 == false }
+            .take(1)
+            .subscribe(onNext: { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.collectionView?.reloadData()
+                }
+            }).disposed(by: _disposeBag)
+        
+        // If user denies access to photo library
+        authorizedObserver
+            .takeLast(1)
+            .filter{ $0 == false }
+            .subscribe(onNext: { [weak self] _ in
+                guard let `self` = self else { return }
+                self._showErrorMessage()
+            })
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         _selectedPhotosSubject.onCompleted()
@@ -75,6 +100,16 @@ class PhotosViewController: UICollectionViewController {
                 self?._selectedPhotosSubject.onNext(image)
             }
         })
+    }
+    
+    private func _showErrorMessage() {
+        alert(title: "Access Denied!", message: "You can grant access from settings!")
+        .asObservable()
+        .subscribe(onCompleted: { [weak self] in
+            self?.dismiss(animated: false, completion: nil)
+            _ = self?.navigationController?.popViewController(animated: true)
+        })
+        .disposed(by: _disposeBag)
     }
 
 }

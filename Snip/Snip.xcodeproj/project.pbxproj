@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		425FF61E20E02EAA00625A02 /* PHPhotoLibrary+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF61D20E02EAA00625A02 /* PHPhotoLibrary+rx.swift */; };
+		425FF62020E032D800625A02 /* UIViewController+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425FF61F20E032D800625A02 /* UIViewController+rx.swift */; };
 		42E3967C20DF1D6000E9DC04 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E3967B20DF1D6000E9DC04 /* AppDelegate.swift */; };
 		42E3968120DF1D6000E9DC04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42E3967F20DF1D6000E9DC04 /* Main.storyboard */; };
 		42E3968320DF1D6200E9DC04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42E3968220DF1D6200E9DC04 /* Assets.xcassets */; };
@@ -46,6 +48,8 @@
 		3396135C70C1C7FA37629497 /* Pods-SnipUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SnipUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SnipUITests/Pods-SnipUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		34E3A0137B4423CCB2C55888 /* Pods_SnipTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SnipTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C7F78389A3C2BB1C040D103 /* Pods-SnipTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SnipTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SnipTests/Pods-SnipTests.debug.xcconfig"; sourceTree = "<group>"; };
+		425FF61D20E02EAA00625A02 /* PHPhotoLibrary+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHPhotoLibrary+rx.swift"; sourceTree = "<group>"; };
+		425FF61F20E032D800625A02 /* UIViewController+rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+rx.swift"; sourceTree = "<group>"; };
 		42E3967820DF1D6000E9DC04 /* Snip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42E3967B20DF1D6000E9DC04 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42E3968020DF1D6000E9DC04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -180,8 +184,10 @@
 		42E396B120DF2E7C00E9DC04 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				425FF61D20E02EAA00625A02 /* PHPhotoLibrary+rx.swift */,
 				42E396B220DF2EAD00E9DC04 /* UIImage+Collage.swift */,
 				42E396FD20DF5EC400E9DC04 /* UIView+Layer.swift */,
+				425FF61F20E032D800625A02 /* UIViewController+rx.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -427,11 +433,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				425FF61E20E02EAA00625A02 /* PHPhotoLibrary+rx.swift in Sources */,
 				42E3967C20DF1D6000E9DC04 /* AppDelegate.swift in Sources */,
 				42E396B520DF33A900E9DC04 /* PhotosViewController.swift in Sources */,
 				42E396B020DF240400E9DC04 /* CollagePreviewViewController.swift in Sources */,
 				42E396B320DF2EAD00E9DC04 /* UIImage+Collage.swift in Sources */,
 				42E396FE20DF5EC400E9DC04 /* UIView+Layer.swift in Sources */,
+				425FF62020E032D800625A02 /* UIViewController+rx.swift in Sources */,
 				42E396B820DF450300E9DC04 /* ImageWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
