@@ -59,12 +59,17 @@ class CollagePreviewViewController: UIViewController {
     @IBAction func addAction(_ sender: Any) {
         let selectPhotoViewController = storyboard!.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
         let sharedObservable = selectPhotoViewController.selectedPhotos.share()
-        sharedObservable.subscribe(onNext: { [weak self](image) in
+        
+        // Just allow landscape images
+        sharedObservable
+            .filter{ $0.size.width > $0.size.height }
+            .subscribe(onNext: { [weak self](image) in
             guard let images = self?._images else { return }
             images.value.append(image)
         }) {
             print("Disposed!")
         }.disposed(by: _disposeBag)
+        
         
         sharedObservable
             .ignoreElements()
