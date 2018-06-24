@@ -57,6 +57,7 @@ class PhotosViewController: UICollectionViewController {
                 guard let `self` = self else { return }
                 self._showErrorMessage()
             })
+            .disposed(by: _disposeBag)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
