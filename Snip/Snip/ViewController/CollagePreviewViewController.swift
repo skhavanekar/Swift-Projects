@@ -39,7 +39,7 @@ class CollagePreviewViewController: UIViewController {
     }
     
     private func _updateNavigation() {
-        guard let image = self.collageImageView.image?.scaled(CGSize(width: 22, height: 22)).withRenderingMode(.alwaysOriginal) else { return }
+        let image = self.collageImageView.image?.scaled(CGSize(width: 22, height: 22)).withRenderingMode(.alwaysOriginal)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: nil, action: nil)
     }
     
@@ -59,7 +59,11 @@ class CollagePreviewViewController: UIViewController {
     @IBAction func addAction(_ sender: Any) {
         let selectPhotoViewController = storyboard!.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
         let sharedObservable = selectPhotoViewController.selectedPhotos.share()
-        
+        _addPhotoViewObserver(sharedObservable)
+        self.navigationController?.pushViewController(selectPhotoViewController, animated: true)
+    }
+    
+    private func _addPhotoViewObserver(_ sharedObservable: Observable<UIImage>) {
         // Just allow landscape images
         sharedObservable
             .takeWhile({ [weak self](image) -> Bool in
@@ -67,20 +71,18 @@ class CollagePreviewViewController: UIViewController {
             })
             .filter{ $0.size.width > $0.size.height }
             .subscribe(onNext: { [weak self](image) in
-            guard let images = self?._images else { return }
-            images.value.append(image)
-        }) {
-            print("Disposed!")
-        }.disposed(by: _disposeBag)
+                guard let images = self?._images else { return }
+                images.value.append(image)
+            }) {
+                print("Disposed!")
+            }.disposed(by: _disposeBag)
         
         
         sharedObservable
             .ignoreElements()
             .subscribe(onCompleted: { [weak self] in
-            self?._updateNavigation()
-        }).disposed(by: _disposeBag)
-        
-        self.navigationController?.pushViewController(selectPhotoViewController, animated: true)
+                self?._updateNavigation()
+            }).disposed(by: _disposeBag)
     }
     
     
