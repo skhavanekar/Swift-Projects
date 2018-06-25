@@ -11,10 +11,21 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 
+func cachedFileURL(_ fileName: String) -> URL {
+    return FileManager.default
+        .urls(for: .cachesDirectory, in: .allDomainsMask)
+        .first!
+        .appendingPathComponent(fileName)
+}
+
 class RepoFeedViewController: UITableViewController {
     private let _repo = "skhavanekar/Swift-Projects"
     private let _events = Variable<[GitFeedEvent]>([])
     private let _disposeBag = DisposeBag()
+    
+    private let _eventsFileURL = cachedFileURL("events.plist")
+    private let _modifiedFileURL = cachedFileURL("modified.plist")
+    private let _lastModified = Variable<NSString?>(nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +39,13 @@ class RepoFeedViewController: UITableViewController {
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(RepoFeedViewController.refresh), for: .valueChanged)
         
+        let eventsArray = NSArray(contentsOf: _eventsFileURL) as? [[String: Any]] ?? []
+        _events.value = eventsArray.compactMap { GitFeedEvent(JSON: $0)! }
+        _lastModified.value = try? NSString(contentsOf: _modifiedFileURL, usedEncoding: nil)
+        
         refresh()
+        
+        
     }
     
     @objc func refresh() {
@@ -40,9 +57,13 @@ class RepoFeedViewController: UITableViewController {
     
     func fetchEvents(repo: String) {
         let response = Observable.from([_repo])
-            .map { repo in
+            .map { [weak self] repo in
                 let url = URL(string: "https://api.github.com/repos/\(repo)/events")!
-                return URLRequest(url: url)
+                var request = URLRequest(url: url)
+                if let modifiedHeader = self?._lastModified.value {
+                    request.addValue(modifiedHeader as String, forHTTPHeaderField: "Last-Modified")
+                }
+                return request
             }
             .flatMap { request in
                 URLSession.shared.rx.response(request: request)
@@ -59,7 +80,7 @@ class RepoFeedViewController: UITableViewController {
                 }
                 return result
             }
-                .filter { objects in
+            .filter { objects in
                     objects.count > 0
             }
             .map { objects in
@@ -69,6 +90,24 @@ class RepoFeedViewController: UITableViewController {
             .subscribe(onNext: { [weak self] newEvents in
                 self?._processEvents(newEvents)
             }).disposed(by: _disposeBag)
+        
+        response
+            .filter { response, _ in
+            return 200..<400 ~= response.statusCode
+            }
+            .flatMap { response, _ -> Observable<NSString> in
+                guard let value = response.allHeaderFields["Last-Modified"] as? NSString else {
+                    return Observable.empty()
+                }
+                return Observable.just(value)
+            }
+            .subscribe(onNext: { [weak self] modifiedHeader in
+                guard let `self` = self else { return }
+                self._lastModified.value = modifiedHeader
+                
+                try? modifiedHeader.write(to: self._modifiedFileURL, atomically: true, encoding: String.Encoding.utf8.rawValue)
+            })
+            .disposed(by: _disposeBag)
     }
     
     private func _processEvents(_ newEvents: [GitFeedEvent]) {
@@ -81,6 +120,10 @@ class RepoFeedViewController: UITableViewController {
             self.tableView.reloadData()
             self.refreshControl?.endRefreshing()
         }
+        let jsonEvents = updatedEvents.map { $0.toJSON() } as NSArray
+        jsonEvents.write(to: _eventsFileURL, atomically: true)
+        
+        //_lastModified.value = try? NSString(contentsOf: _modifiedFileURL, encoding: nil)
     }
 
     override func didReceiveMemoryWarning() {
