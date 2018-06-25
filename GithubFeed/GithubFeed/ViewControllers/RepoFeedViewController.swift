@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import Kingfisher
 
 class RepoFeedViewController: UITableViewController {
@@ -38,7 +39,48 @@ class RepoFeedViewController: UITableViewController {
     }
     
     func fetchEvents(repo: String) {
+        let response = Observable.from([_repo])
+            .map { repo in
+                let url = URL(string: "https://api.github.com/repos/\(repo)/events")!
+                return URLRequest(url: url)
+            }
+            .flatMap { request in
+                URLSession.shared.rx.response(request: request)
+            }
+            .share(replay: 1, scope: SubjectLifetimeScope.whileConnected)
         
+        response.filter { response, _ in
+                return 200..<300 ~= response.statusCode
+            }
+            .map { _, data -> [[String: Any]] in
+                guard let responseData = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let result = responseData as? [[String: Any]] else {
+                        return []
+                }
+                return result
+            }
+                .filter { objects in
+                    objects.count > 0
+            }
+            .map { objects in
+                    objects.flatMap {
+                        return GitFeedEvent(JSON: $0) }
+            }
+            .subscribe(onNext: { [weak self] newEvents in
+                self?._processEvents(newEvents)
+            }).disposed(by: _disposeBag)
+    }
+    
+    private func _processEvents(_ newEvents: [GitFeedEvent]) {
+        var updatedEvents = newEvents + _events.value
+        if updatedEvents.count > 50 {
+            updatedEvents = Array<GitFeedEvent>(updatedEvents.prefix(upTo: 50))
+        }
+        _events.value = updatedEvents
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -57,7 +99,7 @@ class RepoFeedViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
         cell.textLabel?.text = event.actor.name
-        cell.detailTextLabel?.text = event.repo + ", " + event.action.replacingOccurrences(of: "Event", with: "").lowercased()
+        cell.detailTextLabel?.text = event.repo.name + ", " + event.action.replacingOccurrences(of: "Event", with: "").lowercased()
         cell.imageView?.kf.setImage(with: event.actor.imageURL, placeholder: UIImage(named: "blank-avatar"))
         return cell
     }
