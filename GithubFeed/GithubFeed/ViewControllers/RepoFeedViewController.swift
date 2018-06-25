@@ -56,7 +56,25 @@ class RepoFeedViewController: UITableViewController {
     }
     
     func fetchEvents(repo: String) {
-        let response = Observable.from([_repo])
+            
+        let topReposUrlString = "https://api.github.com/search/repositories?q=language:swift&per_page=5"
+        
+        let response = Observable.from([topReposUrlString])
+            .map { urlString -> URLRequest in
+                let url = URL(string: urlString)!
+                var request = URLRequest(url: url)
+                return request
+            }
+            .flatMap { request in
+                URLSession.shared.rx.json(request: request)
+            }
+            .flatMap { response -> Observable<String> in
+                guard let response = response as? [String: Any],
+                    let items = response["items"] as? [[String: Any]] else {
+                        return Observable.empty()
+                }
+                return Observable.from(items.map { $0["full_name"] as! String })
+            }
             .map { [weak self] repo in
                 let url = URL(string: "https://api.github.com/repos/\(repo)/events")!
                 var request = URLRequest(url: url)
